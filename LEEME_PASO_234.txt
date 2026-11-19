@@ -1,0 +1,17 @@
+AGUILAS NEGRAS — PASO 234 — PROTOTIPO EXPERIMENTAL AISLADO
+
+En un repositorio privado nuevo de GitHub Codespaces, subir SOLO los archivos de esta carpeta.
+Ejecutar: npm install
+Luego: npm test
+Esperado: 22 pruebas (14 reglas + 8 logica local), 0 fallidas.
+
+LIMITACIONES CRITICAS:
+- emisor_sesiones.cjs es logica PURA de demostracion, NO un servicio confiable desplegado.
+- deviceProofVerified es un parametro simulado en pruebas; NO se valida una prueba WebAuthn real.
+- No se generan ni verifican tokens de Firebase, no se implementa Firebase Auth/Functions.
+- Las reglas heredadas del Paso 233 suponen un claim sessionId emitido por servidor.
+- setCustomUserClaims es POR USUARIO y no representa de forma segura sesiones independientes por dispositivo; requiere un diseno de intercambio de tokens y autorizacion verificada en backend antes de integrar.
+- Las 22 pruebas no prueban la integracion extremo a extremo ni seguridad fisica de dispositivos.
+- NO subir archivos reales, claves, respaldos, ni conectar a Firebase de produccion.
+- NO publicar estas reglas en produccion.
+- La migracion de expedientes reales permanece bloqueada.

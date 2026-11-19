@@ -1,0 +1,12 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const {issue,revoke,mayAccess}=require('./emisor_sesiones.cjs');
+const opts={uid:'usuario_ficticio',roleApproved:true,deviceProofVerified:true,now:1000};
+test('15 emite sesion aleatoria de duracion limitada',()=>{const a=issue(opts),b=issue(opts);assert.notEqual(a.sessionId,b.sessionId);assert.equal(a.expiraEn,901000);assert.equal(a.estado,'activo')});
+test('16 no emite sin rol autorizado',()=>assert.throws(()=>issue({...opts,roleApproved:false}),/ROL_NO_AUTORIZADO/));
+test('17 no emite sin prueba verificada',()=>assert.throws(()=>issue({...opts,deviceProofVerified:false}),/PRUEBA_DISPOSITIVO_NO_VERIFICADA/));
+test('18 limita tiempo maximo de sesion',()=>assert.throws(()=>issue({...opts,ttlMs:3600000}),/TTL_INVALIDO/));
+test('19 revocacion solo administrador',()=>{const s=issue(opts);assert.throws(()=>revoke(s,s.uid,false),/ADMIN_NO_AUTORIZADO/);assert.equal(revoke(s,s.uid,true).estado,'revocado')});
+test('20 acceso denegado tras revocacion',()=>{const s=issue(opts);assert.equal(mayAccess(s,s.uid,2000),true);assert.equal(mayAccess(revoke(s,s.uid,true),s.uid,2000),false)});
+test('21 acceso denegado tras vencimiento',()=>{const s=issue(opts);assert.equal(mayAccess(s,s.uid,s.expiraEn),false)});
+test('22 acceso denegado a usuario distinto',()=>{const s=issue(opts);assert.equal(mayAccess(s,'otro',2000),false)});
